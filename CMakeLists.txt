@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.0)
-project(VenomGUI)
+project(VenomGui)
+
+# Finding gz-rendering
+find_package(ignition-rendering6 REQUIRED)
+find_package(ignition-common4 REQUIRED)
 
 # Finding OpenGL
+set(OpenGL_GL_PREFERENCE "GLVND")
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
@@ -25,12 +30,21 @@ set(IMGUI_SRCS
     ${IMGUI_SOURCE_PATH}/backends/imgui_impl_opengl3.cpp
     )
 
-# Setting project sources
-set(VENOM_SRCS main.cpp)
+# Setting VenomGui headers
+include_directories(include)
+
+# Setting VenomGui sources
+set(VENOM_SRCS src/main.cpp)
+
+# ignition-rendering examples use this...
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
 
 add_executable(${PROJECT_NAME} ${VENOM_SRCS} ${IMGUI_SRCS})
 
 # Linking libraries
 target_link_libraries(${PROJECT_NAME}
     ${OPENGL_LIBRARIES}
-    glfw)
+    glfw
+    ${IGNITION-COMMON_LIBRARIES}
+    ${IGNITION-RENDERING_LIBRARIES}
+)
